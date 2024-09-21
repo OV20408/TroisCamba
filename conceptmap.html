@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Concept Map - TROIS (Camba) Method</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        line-height: 1.6;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        background-color: #f0f0f0;
+      }
+      .container {
+        width: 90%;
+        margin: auto;
+        overflow: hidden;
+        padding: 20px;
+      }
+      header {
+        background: #50b3a2;
+        color: white;
+        padding-top: 30px;
+        min-height: 70px;
+        border-bottom: #ff6b6b 3px solid;
+      }
+      header a {
+        color: #ffffff;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-size: 16px;
+      }
+      header ul {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        overflow: hidden;
+      }
+      header li {
+        float: left;
+        display: inline;
+        padding: 0 20px 0 20px;
+      }
+      header #branding {
+        float: left;
+      }
+      header #branding h1 {
+        margin: 0;
+      }
+      header nav {
+        float: right;
+        margin-top: 10px;
+      }
+      header .highlight,
+      header .current a {
+        color: #ff6b6b;
+        font-weight: bold;
+      }
+      header a:hover {
+        color: #ffffff;
+        font-weight: bold;
+      }
+      #concept-map-area {
+        background: #fff;
+        padding: 20px;
+        margin-top: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      #concept-map-canvas {
+        width: 100%;
+        height: 600px;
+        border: 1px solid #ddd;
+      }
+      #add-concept-form,
+      #add-relation-form {
+        margin-top: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      #add-concept-form input,
+      #add-concept-form button,
+      #add-relation-form select,
+      #add-relation-form input,
+      #add-relation-form button {
+        padding: 5px;
+        margin: 5px 0;
+      }
+      footer {
+        padding: 20px;
+        margin-top: 20px;
+        color: #ffffff;
+        background-color: #ff6b6b;
+        text-align: center;
+      }
+      @media (max-width: 768px) {
+        header #branding,
+        header nav,
+        header nav li,
+        #add-concept-form input,
+        #add-concept-form button,
+        #add-relation-form select,
+        #add-relation-form input,
+        #add-relation-form button {
+          float: none;
+          text-align: center;
+          width: 100%;
+        }
+        header {
+          padding-bottom: 20px;
+        }
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div id="branding">
+          <h1><span class="highlight">TROIS</span> Camba Method</h1>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="mindmap.html">Mind Map</a></li>
+            <li class="current"><a href="conceptmap.html">Concept Map</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <div class="container">
+      <h2>Concept Map</h2>
+      <p>
+        Use this concept map to define and visualize relationships between
+        different ideas and concepts from your brainstorming session. This will
+        help in understanding the connections and dependencies in your project.
+      </p>
+
+      <div id="concept-map-area">
+        <div id="concept-map-canvas"></div>
+        <form id="add-concept-form">
+          <input
+            type="text"
+            id="concept-label"
+            placeholder="Concept Label"
+            required
+          />
+          <button type="submit">Add Concept</button>
+        </form>
+        <form id="add-relation-form">
+          <select id="from-concept" required>
+            <option value="">From Concept</option>
+          </select>
+          <select id="to-concept" required>
+            <option value="">To Concept</option>
+          </select>
+          <input
+            type="text"
+            id="relation-label"
+            placeholder="Relation Label"
+            required
+          />
+          <button type="submit">Add Relation</button>
+        </form>
+      </div>
+    </div>
+
+    <footer>
+      <p>TROIS (Camba) Method, Copyright &copy; 2023</p>
+    </footer>
+
+    <script>
+      // Initialize variables
+      let nodes = new vis.DataSet();
+      let edges = new vis.DataSet();
+      let network = null;
+
+      // Create a new concept node
+      function addConcept(label) {
+        const nodeId = Date.now();
+        nodes.add({ id: nodeId, label: label, shape: "box" });
+        return nodeId;
+      }
+
+      // Create a new relation edge
+      function addRelation(fromId, toId, label) {
+        edges.add({ from: fromId, to: toId, label: label, arrows: "to" });
+      }
+
+      // Initialize the network
+      function initNetwork() {
+        const container = document.getElementById("concept-map-canvas");
+        const data = { nodes, edges };
+        const options = {
+          layout: {
+            randomSeed: 1,
+            improvedLayout: true,
+          },
+          physics: {
+            stabilization: false,
+            barnesHut: {
+              gravitationalConstant: -2000,
+              springConstant: 0.04,
+              springLength: 95,
+            },
+          },
+          interaction: {
+            dragNodes: true,
+            dragView: true,
+            zoomView: true,
+          },
+        };
+        network = new vis.Network(container, data, options);
+      }
+
+      // Update concept selects
+      function updateConceptSelects() {
+        const fromSelect = document.getElementById("from-concept");
+        const toSelect = document.getElementById("to-concept");
+        fromSelect.innerHTML = '<option value="">From Concept</option>';
+        toSelect.innerHTML = '<option value="">To Concept</option>';
+        nodes.forEach((node) => {
+          const optionFrom = document.createElement("option");
+          optionFrom.value = node.id;
+          optionFrom.textContent = node.label;
+          fromSelect.appendChild(optionFrom);
+
+          const optionTo = document.createElement("option");
+          optionTo.value = node.id;
+          optionTo.textContent = node.label;
+          toSelect.appendChild(optionTo);
+        });
+      }
+
+      // Handle concept form submission
+      document
+        .getElementById("add-concept-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const label = document.getElementById("concept-label").value;
+          addConcept(label);
+          updateConceptSelects();
+          document.getElementById("concept-label").value = "";
+        });
+
+      // Handle relation form submission
+      document
+        .getElementById("add-relation-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const fromId = document.getElementById("from-concept").value;
+          const toId = document.getElementById("to-concept").value;
+          const label = document.getElementById("relation-label").value;
+          addRelation(parseInt(fromId), parseInt(toId), label);
+          document.getElementById("relation-label").value = "";
+        });
+
+      // Initialize the network when the page loads
+      window.addEventListener("load", function () {
+        initNetwork();
+        updateConceptSelects();
+
+        // Add initial concepts
+        const ventureId = addConcept("Venture");
+        const productsId = addConcept("Products");
+        const servicesId = addConcept("Services");
+        const marketId = addConcept("Market");
+        const operationsId = addConcept("Operations");
+
+        // Add initial relations
+        addRelation(ventureId, productsId, "offers");
+        addRelation(ventureId, servicesId, "provides");
+        addRelation(ventureId, marketId, "targets");
+        addRelation(ventureId, operationsId, "manages");
+
+        updateConceptSelects();
+      });
+
+      // Save concept map to local storage
+      function saveConceptMap() {
+        const conceptMapData = {
+          nodes: nodes.get(),
+          edges: edges.get(),
+        };
+        localStorage.setItem("conceptMap", JSON.stringify(conceptMapData));
+      }
+
+      // Load concept map from local storage
+      function loadConceptMap() {
+        const savedData = localStorage.getItem("conceptMap");
+        if (savedData) {
+          const conceptMapData = JSON.parse(savedData);
+          nodes.clear();
+          edges.clear();
+          nodes.add(conceptMapData.nodes);
+          edges.add(conceptMapData.edges);
+          network.setData({ nodes, edges });
+          updateConceptSelects();
+        }
+      }
+
+      // Add save and load buttons
+      const saveButton = document.createElement("button");
+      saveButton.textContent = "Save Concept Map";
+      saveButton.onclick = saveConceptMap;
+      document.getElementById("concept-map-area").appendChild(saveButton);
+
+      const loadButton = document.createElement("button");
+      loadButton.textContent = "Load Concept Map";
+      loadButton.onclick = loadConceptMap;
+      document.getElementById("concept-map-area").appendChild(loadButton);
+
+      // Export concept map as image
+      function exportImage() {
+        const canvas = network.canvas.frame.canvas;
+        const image = canvas
+          .toDataURL("image/png")
+          .replace("image/png", "image/octet-stream");
+        const link = document.createElement("a");
+        link.download = "concept-map.png";
+        link.href = image;
+        link.click();
+      }
+
+      const exportButton = document.createElement("button");
+      exportButton.textContent = "Export as Image";
+      exportButton.onclick = exportImage;
+      document.getElementById("concept-map-area").appendChild(exportButton);
+    </script>
+  </body>
+</html>

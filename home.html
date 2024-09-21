@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Brainstorming - TROIS (Camba) Method</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        line-height: 1.6;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      .container {
+        width: 80%;
+        margin: auto;
+        overflow: hidden;
+        padding: 20px;
+      }
+      header {
+        background: #50b3a2;
+        color: white;
+        padding-top: 30px;
+        min-height: 70px;
+        border-bottom: #e8491d 3px solid;
+      }
+      header a {
+        color: #ffffff;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-size: 16px;
+      }
+      header ul {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        overflow: hidden;
+      }
+      header li {
+        float: left;
+        display: inline;
+        padding: 0 20px 0 20px;
+      }
+      header #branding {
+        float: left;
+      }
+      header #branding h1 {
+        margin: 0;
+      }
+      header nav {
+        float: right;
+        margin-top: 10px;
+      }
+      header .highlight,
+      header .current a {
+        color: #e8491d;
+        font-weight: bold;
+      }
+      header a:hover {
+        color: #ffffff;
+        font-weight: bold;
+      }
+      #main {
+        background: #ffffff;
+        padding: 20px;
+        margin-top: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      #boxes {
+        margin-top: 20px;
+      }
+      #boxes .box {
+          float: left;
+          text-align: center;
+          width: 30%;
+          padding: 10px;
+      }
+      #boxes .box img {
+          width: 90px;
+      }
+
+      #idea-form {
+        margin-bottom: 20px;
+      }
+      #idea-form input[type="text"] {
+        width: 70%;
+        padding: 8px;
+        margin-right: 10px;
+      }
+      #idea-form button {
+        padding: 8px 15px;
+        background: #50b3a2;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      #idea-form button:hover {
+        background: #3a8c7d;
+      }
+      #ideas-list {
+        list-style-type: none;
+        padding: 0;
+      }
+      #ideas-list li {
+        background: #f4f4f4;
+        margin: 5px 0;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      footer {
+        padding: 20px;
+        margin-top: 20px;
+        color: #ffffff;
+        background-color: #e8491d;
+        text-align: center;
+      }
+      @media (max-width: 768px) {
+        header #branding,
+        header nav,
+        header nav li,
+        #idea-form input[type="text"],
+        #idea-form button {
+          float: none;
+          text-align: center;
+          width: 100%;
+        }
+        header {
+          padding-bottom: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div id="branding">
+          <h1><span class="highlight">TROIS</span> Camba Method</h1>
+        </div>
+        <nav>
+          <ul>
+            <li class="current"><a href="index.html">Home</a></li>
+            <li><a href="mindmap.html">Mind Map</a></li>
+            <li><a href="conceptmap.html">Concept Map</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main">
+        <h2>Brainstorming Session</h2>
+        <p>
+          Utiliza este espacio para generar y capturar ideas para tu emprendimiento
+          proyecto. No te reprimas: ¡todas las ideas son bienvenidas en esta etapa!
+        </p>
+
+        <form id="idea-form">
+          <input type="text"id="idea-input"placeholder="Tu idea va aqui..."required/>
+          <button type="submit">Agrega tu Idea</button>
+        </form>
+
+        <ul id="ideas-list"></ul>
+      </section>
+    </div>
+
+    <section id="boxes">
+      <div class="container">
+          <div class="box">
+              <img src="https://cdn-icons-png.flaticon.com/512/1774/1774115.png" alt="Idea lightbulb icon">
+              <h3>Generar Ideas</h3>
+              <p>Deja volar tu imaginación. Ninguna idea es demasiado grande o pequeña.</p>
+          </div>
+          <div class="box">
+              <img src="https://cdn-icons-png.flaticon.com/512/7329/7329484.png" alt="Collaboration icon">
+              <h3>Colaboracion</h3>
+              <p>Comparta sus ideas con otros y aproveche los pensamientos de los demás.</p>
+          </div>
+          <div class="box">
+              <img src="https://cdn-icons-png.flaticon.com/512/4727/4727266.png" alt="Innovation icon">
+              <h3>Inovacion</h3>
+              <p>Transforme sus mejores ideas en planes viables para su empresa.</p>
+          </div>
+      </div>
+  </section>
+
+    <footer>
+      <p>TROIS (Camba) Method, Copyright &copy; 2023</p>
+    </footer>
+
+    <script>
+      const ideaForm = document.getElementById("idea-form");
+      const ideaInput = document.getElementById("idea-input");
+      const ideasList = document.getElementById("ideas-list");
+
+      // Load ideas from local storage
+      let ideas = JSON.parse(localStorage.getItem("brainstormingIdeas")) || [];
+
+      // Function to render ideas
+      function renderIdeas() {
+        ideasList.innerHTML = "";
+        ideas.forEach((idea, index) => {
+          const li = document.createElement("li");
+          li.textContent = idea;
+
+          // Add delete button
+          const deleteBtn = document.createElement("button");
+          deleteBtn.textContent = "Delete";
+          deleteBtn.onclick = () => deleteIdea(index);
+          li.appendChild(deleteBtn);
+
+          ideasList.appendChild(li);
+        });
+      }
+
+      // Function to add new idea
+      function addIdea(idea) {
+        ideas.push(idea);
+        localStorage.setItem("brainstormingIdeas", JSON.stringify(ideas));
+        renderIdeas();
+      }
+
+      // Function to delete idea
+      function deleteIdea(index) {
+        ideas.splice(index, 1);
+        localStorage.setItem("brainstormingIdeas", JSON.stringify(ideas));
+        renderIdeas();
+      }
+
+      // Event listener for form submission
+      ideaForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const newIdea = ideaInput.value.trim();
+        if (newIdea) {
+          addIdea(newIdea);
+          ideaInput.value = "";
+        }
+      });
+
+      // Initial render
+      renderIdeas();
+
+      // Add export functionality
+      function exportIdeas() {
+        const ideasText = ideas.join("\n");
+        const blob = new Blob([ideasText], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "brainstorming_ideas.txt";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      // Add export button
+      const exportBtn = document.createElement("button");
+      exportBtn.textContent = "Exporta tus Ideas";
+      exportBtn.style.padding = "10px 20px"; 
+      exportBtn.style.background = "#50b3a2";
+      exportBtn.style.color = "white";
+      exportBtn.style.border = "none";
+      exportBtn.style.cursor = "pointer";
+
+
+
+      exportBtn.onclick = exportIdeas;
+      document.getElementById("main").appendChild(exportBtn);
+
+      // Add timer functionality
+      let timerInterval;
+      let timeLeft = 0;
+
+      function startTimer(duration) {
+        clearInterval(timerInterval);
+        timeLeft = duration * 60;
+        updateTimerDisplay();
+        timerInterval = setInterval(() => {
+          timeLeft--;
+          updateTimerDisplay();
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            alert("Brainstorming session finished!");
+          }
+        }, 1000);
+      }
+
+      function updateTimerDisplay() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerDisplay.textContent = `${minutes
+          .toString()
+          .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+      }
+
+      // Add timer elements
+      const timerContainer = document.createElement("div");
+      const timerInput = document.createElement("input");
+      timerInput.type = "number";
+      timerInput.min = "1";
+      timerInput.value = "5";
+      timerInput.placeholder = "Minutes";
+      const timerStartBtn = document.createElement("button");
+      timerStartBtn.textContent = "Inicia temporizador";
+
+      //aqui
+      timerStartBtn.style.margin = "10px 20px"; 
+      timerStartBtn.style.padding = "10px 20px"; 
+      timerStartBtn.style.background = "#50b3a2";
+      timerStartBtn.style.color = "white";
+      timerStartBtn.style.border = "none";
+      timerStartBtn.style.cursor = "pointer";
+
+      const timerDisplay = document.createElement("span");
+      timerDisplay.textContent = "00:00";
+
+      timerStartBtn.onclick = () => startTimer(parseInt(timerInput.value));
+
+      timerContainer.appendChild(timerInput);
+      timerContainer.appendChild(timerStartBtn);
+      timerContainer.appendChild(timerDisplay);
+      document.getElementById("main").insertBefore(timerContainer, ideaForm);
+    </script>
+  </body>
+</html>
